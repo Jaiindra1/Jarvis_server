@@ -1,16 +1,36 @@
-const Database = require("better-sqlite3")
+const initSqlJs = require("sql.js")
 
-const db = new Database("jarvis.db")
+let db
 
-db.prepare(`
-CREATE TABLE IF NOT EXISTS transactions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    source TEXT,
-    amount REAL,
-    type TEXT,
-    reference TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-)
-`).run()
+async function initDB() {
+    const SQL = await initSqlJs()
+    db = new SQL.Database()
 
-module.exports = db
+    db.run(`
+        CREATE TABLE IF NOT EXISTS transactions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            source TEXT,
+            amount REAL,
+            type TEXT,
+            reference TEXT
+        )
+    `)
+}
+
+function insertTransaction(source, amount, type, reference) {
+    db.run(
+        "INSERT INTO transactions (source, amount, type, reference) VALUES (?, ?, ?, ?)",
+        [source, amount, type, reference]
+    )
+}
+
+function getTransactions() {
+    const result = db.exec("SELECT * FROM transactions")
+    return result
+}
+
+module.exports = {
+    initDB,
+    insertTransaction,
+    getTransactions
+}
