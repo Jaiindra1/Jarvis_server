@@ -3,27 +3,33 @@ const router = express.Router()
 
 const db = require("../database")
 
-router.post("/add", (req, res) => {
+app.post("/transactions/add", (req, res) => {
 
-    const { source, amount, type, reference } = req.body
+    const {
+        source,
+        amount,
+        type,
+        reference,
+        merchant,
+        category,
+        bank,
+        app,
+        timestamp
+    } = req.body
 
-    const query = `
-        INSERT INTO transactions(source, amount, type, reference)
-        VALUES (?, ?, ?, ?)
-    `
-
-    db.run(query, [source, amount, type, reference], function(err) {
-
-        if (err) {
-            return res.status(500).json({ error: err.message })
-        }
-
-        res.json({
-            message: "Transaction stored",
-            id: this.lastID
-        })
-
+    insertTransaction({
+        source,
+        amount,
+        type,
+        reference,
+        merchant,
+        category,
+        bank,
+        app,
+        timestamp
     })
+
+    res.json({ message: "Transaction stored" })
 
 })
 
