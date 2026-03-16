@@ -2,45 +2,35 @@ const express = require("express")
 const router = express.Router()
 
 const db = require("../database")
+const parseTransaction = require("./transactionParser")
+const detectMerchant = require("./merchantEngine")
 
-/* ADD TRANSACTION */
+app.post("/transactions/add", (req, res) => {
 
-router.post("/add", (req, res) => {
+  const { message, source } = req.body
 
-    const {
-        source,
-        amount,
-        type,
-        reference,
-        merchant,
-        category,
-        bank,
-        app,
-        timestamp
-    } = req.body
+  const parsed = parseTransaction(message)
 
-    const query = `
-        INSERT INTO transactions
-        (source, amount, type, reference, merchant, category, bank, app, timestamp)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `
+  const merchantData = detectMerchant(message)
 
-    db.run(
-        query,
-        [source, amount, type, reference, merchant, category, bank, app, timestamp],
-        function(err) {
+  const transaction = {
 
-            if (err) {
-                return res.status(500).json({ error: err.message })
-            }
+    source,
+    amount: parsed.amount,
+    type: parsed.type,
+    reference: parsed.reference,
+    merchant: merchantData.merchant,
+    category: merchantData.category,
+    bank: "BOB",
+    app: "UPI",
+    timestamp: Date.now()
 
-            res.json({
-                message: "Transaction stored",
-                id: this.lastID
-            })
+  }
 
-        }
-    )
+  insertTransaction(transaction)
+
+  res.json(transaction)
+
 })
 
 /* GET ALL TRANSACTIONS */
