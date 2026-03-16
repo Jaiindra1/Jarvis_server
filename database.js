@@ -20,7 +20,14 @@ async function initDB() {
             app TEXT,
             timestamp INTEGER
         )
-    `)
+    `),
+        db.run(`
+CREATE TABLE IF NOT EXISTS merchants (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ name TEXT UNIQUE,
+ category TEXT
+)
+`)
 
 }
 
