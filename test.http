@@ -1,0 +1,13 @@
+###
+curl -X POST http://localhost:3000/transactions/add \
+-H "Content-Type: application/json" \
+-d '{
+  "source": "Amazon",
+  "amount": 450,
+  "type": "debit",
+  "reference": "UPI12345"
+}'
+###
+curl -X GET http://localhost:3000/transactions/all
+-H "Content-Type: application/json"\
+###
