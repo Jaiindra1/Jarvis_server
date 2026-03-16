@@ -73,6 +73,27 @@ function getTransactions() {
     })
 }
 
+function saveMerchant(name, category) {
+
+    db.run(
+        "INSERT OR IGNORE INTO merchants (name, category) VALUES (?, ?)",
+        [name, category]
+    )
+
+}
+
+function getMerchantCategory(name) {
+
+    const result = db.exec(
+        "SELECT category FROM merchants WHERE name = ?",
+        [name]
+    )
+
+    if (result.length === 0) return null
+
+    return result[0].values[0][0]
+}
+
 module.exports = {
     initDB,
     insertTransaction,
