@@ -3,7 +3,9 @@ const router = express.Router()
 
 const db = require("../database")
 
-app.post("/transactions/add", (req, res) => {
+/* ADD TRANSACTION */
+
+router.post("/add", (req, res) => {
 
     const {
         source,
@@ -17,36 +19,47 @@ app.post("/transactions/add", (req, res) => {
         timestamp
     } = req.body
 
-    insertTransaction({
-        source,
-        amount,
-        type,
-        reference,
-        merchant,
-        category,
-        bank,
-        app,
-        timestamp
-    })
+    const query = `
+        INSERT INTO transactions
+        (source, amount, type, reference, merchant, category, bank, app, timestamp)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `
 
-    res.json({ message: "Transaction stored" })
+    db.run(
+        query,
+        [source, amount, type, reference, merchant, category, bank, app, timestamp],
+        function(err) {
 
+            if (err) {
+                return res.status(500).json({ error: err.message })
+            }
+
+            res.json({
+                message: "Transaction stored",
+                id: this.lastID
+            })
+
+        }
+    )
 })
 
+/* GET ALL TRANSACTIONS */
 
 router.get("/all", (req, res) => {
 
-    db.all(`SELECT * FROM transactions ORDER BY created_at DESC`, [], (err, rows) => {
+    db.all(
+        `SELECT * FROM transactions ORDER BY timestamp DESC`,
+        [],
+        (err, rows) => {
 
-        if (err) {
-            return res.status(500).json({ error: err.message })
+            if (err) {
+                return res.status(500).json({ error: err.message })
+            }
+
+            res.json(rows)
+
         }
-
-        res.json(rows)
-
-    })
-
+    )
 })
-
 
 module.exports = router
