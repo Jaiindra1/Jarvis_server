@@ -18,17 +18,40 @@ app.get("/", (req, res) => {
 /* ADD TRANSACTION */
 app.post("/transactions/add", (req, res) => {
 
-    const { source, amount, type, reference } = req.body
+    const {
+        source,
+        amount,
+        type,
+        reference,
+        merchant,
+        category,
+        bank,
+        app: appName,
+        timestamp
+    } = req.body
 
-    insertTransaction(source, amount, type, reference)
+    const transaction = {
+        source,
+        amount,
+        type,
+        reference,
+        merchant,
+        category,
+        bank,
+        app: appName,
+        timestamp
+    }
+
+    insertTransaction(transaction)
 
     res.json({
-        message: "Transaction stored"
+        message: "Transaction stored",
+        data: transaction
     })
-
 })
 
 /* GET ALL TRANSACTIONS */
+
 app.get("/transactions/all", (req, res) => {
 
     const data = getTransactions()
