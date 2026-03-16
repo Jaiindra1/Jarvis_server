@@ -8,12 +8,17 @@ async function initDB() {
 
     db.run(`
         CREATE TABLE IF NOT EXISTS transactions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            source TEXT,
-            amount REAL,
-            type TEXT,
-            reference TEXT
-        )
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ source TEXT,
+ amount REAL,
+ type TEXT,
+ reference TEXT,
+ merchant TEXT,
+ category TEXT,
+ bank TEXT,
+ app TEXT,
+ timestamp INTEGER
+)
     `)
 }
 
