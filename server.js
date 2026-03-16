@@ -1,6 +1,6 @@
 const express = require("express")
 const cors = require("cors")
-const { initDB } = require("./database")
+const { initDB, insertTransaction, getTransactions } = require("./database")
 
 const app = express()
 
@@ -13,6 +13,28 @@ initDB().then(() => {
 
 app.get("/", (req, res) => {
     res.send("Jarvis backend running")
+})
+
+/* ADD TRANSACTION */
+app.post("/transactions/add", (req, res) => {
+
+    const { source, amount, type, reference } = req.body
+
+    insertTransaction(source, amount, type, reference)
+
+    res.json({
+        message: "Transaction stored"
+    })
+
+})
+
+/* GET ALL TRANSACTIONS */
+app.get("/transactions/all", (req, res) => {
+
+    const data = getTransactions()
+
+    res.json(data)
+
 })
 
 const PORT = process.env.PORT || 3000
