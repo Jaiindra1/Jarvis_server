@@ -6,15 +6,19 @@ const merchants = {
   uber: "transport",
   ola: "transport",
   netflix: "entertainment",
+  spotify: "entertainment",
+  airtel: "bills",
+  jio: "bills",
   salary: "income"
 }
 
 function detectMerchant(text) {
 
-  text = text.toLowerCase()
+  const lower = text.toLowerCase()
 
-  for (let merchant in merchants) {
-    if (text.includes(merchant)) {
+  for (const merchant in merchants) {
+    if (lower.includes(merchant)) {
+
       return {
         merchant: merchant,
         category: merchants[merchant]
